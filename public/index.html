@@ -10,6 +10,8 @@
     <script type="text/babel">
       const Board = () => {
         const [pos, setPos] = React.useState({ x: 0, y: 0 });
+        const [text, setText] = React.useState("TEST");
+        const [editMode, setEditMode] = React.useState(false);
         return (
           <div
             style={{ width: "1000px", height: "1000px", position: "relative" }}
@@ -17,7 +19,19 @@
             onDragOver={(e) => e.preventDefault()}
           >
             <div style={{ position: "absolute", top: pos.y + "px", left: pos.x + "px" }} draggable={true}>
-              TEST
+              {editMode ? (
+                <textarea
+                  // マウスが別の場所をクリックしたときに、テキストを確定する
+                  onBlur={(e) => setEditMode(false)}
+                  // テキスト編集時に値を設定
+                  onChange={(e) => setText(e.target.value)}
+                  // 編集時の初期文字列
+                  defaultValue={text}
+                />
+              ) : (
+              // クリックで編集モードにする
+              <div onClick={(e) => setEditMode(true)}>{text}</div>
+              )}
             </div>
           </div>
         );
