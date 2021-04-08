@@ -4,26 +4,44 @@
     <meta charset="utf-8" />
     <title>Freedom Board</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="/__/firebase/7.14.2/firebase-app.js"></script>
+    <script src="/__/firebase/7.14.2/firebase-database.js"></script>
+    <script src="/__/firebase/init.js"></script>
     <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script type="text/babel">
+      const firebaseDb = firebase.database();
+      let db = null;
       const Board = () => {
+        React.useEffect(() => {
+          const params = new URL(document.location).searchParams;
+          let roomName = params.get("room_name");
+          if (!roomName) {
+            let roomName = window.prompt("please input room's name");
+            window.location.href = window.location.href + "?room_name=" + roomName;
+          }
+          db = firebaseDb.ref(roomName);
+          db.on("value", (value) => setCards(value.val()));
+        }, []);
 
         const [cards, setCards] = React.useState(null);
-        const add = () =>
-          setCards({
-            ...cards,
-            [Math.random().toString(36).slice(-8)]: {
+        const add = () => {
+          const newPostKey = db.push().key;
+          db.update({
+            [newPostKey]: {
               t: "TEST",
               x: Math.floor(Math.random() * (200 - 80) + 80),
               y: Math.floor(Math.random() * (200 - 80) + 80),
             },
           });
-        const update = (key, card) => setCards({ ...cards, [key]: card });
+        };
+        const update = (key, card) => db.update({ [key]: card });
+        const remove = (key) => db.child(key).remove();
 
         const [dragging, setDragging] = React.useState({ key: "", x: 0, y: 0 });
         const [editMode, setEditMode] = React.useState({ key: "" });
+        const [input, setInput] = React.useState("");
 
         if (!cards) return <button onClick={() => add()}>add card</button>;
         return (
@@ -45,13 +63,18 @@
               >
                 {editMode.key === key ? (
                   <textarea
-                    onBlur={(e) => setEditMode({ key: "" })}
-                    onChange={(e) => update(key, { ...cards[key], t: e.target.value })}
+                    onBlur={(e) => {
+                      update(key, { ...cards[key], t: input });
+                      setEditMode({ key: "" });
+                      setInput("");
+                    }}
+                    onChange={(e) => setInput(e.target.value)}
                     defaultValue={cards[key].t}
                   />
                 ) : (
                   <div onClick={(e) => setEditMode({ key })}>{cards[key].t}</div>
                 )}
+                <button onClick={() => remove(key)}>x</button>
               </div>
             ))}
           </div>
