@@ -7,7 +7,8 @@ let db: firebase.database.Reference | null = null;
 type Item = { t: string; x: number; y: number; c: number };
 type Items = { [key: string]: Item };
 
-const CORLORS = ["#ffe1b4", "#FFF9D5", "#ECFAF5", "#CBF5E4", "#A5DEC8", "#FFF"];
+// 指定可能なカラーの一覧
+const CORLORS = ["#FFF", "#FFB6C1", "#F0E68C", "#87cefa"];
 
 const App: React.FC = () => {
   const [items, setItems] = useState<Items | null>(null);
@@ -19,32 +20,41 @@ const App: React.FC = () => {
   useEffect(() => {
     const path = window.location.pathname;
     if (path === "/") {
+      // ルーム作成ポップアップ
       const roomName = window.prompt("please input room's name") as string;
       window.location.href = roomName;
     }
+    // パス名から対象のDBを取得する
     db = firebaseDb.ref(window.location.pathname);
     db.on("value", (value) => setItems(value.val()));
   }, []);
 
+  // 追加処理
   const add = () => {
     const newPostKey = db?.push().key as string;
     db?.update({
       [newPostKey]: {
-        t: "text here",
+        t: "テキストを入力",
         x: window.scrollX + Math.floor(Math.random() * (200 - 80) + 80),
         y: window.scrollY + Math.floor(Math.random() * (200 - 80) + 80),
         c: 5,
       },
     });
   };
+
+  // 更新処理
   const update = (key: string, item: Item) => db?.update({ [key]: item });
+
+  // 削除処理
   const remove = (key: string) => db?.child(key).remove();
 
   if (!items)
     return (
-      <button className="AddCard" onClick={() => add()}>
-        ＋ add card
-      </button>
+			<div className="Board">
+				<button className="AddCard" onClick={() => add()}>
+					カードを追加
+				</button>
+			</div>
     );
 
   return (
@@ -61,7 +71,7 @@ const App: React.FC = () => {
       }}
     >
       <button className="AddCard" onClick={() => add()}>
-        ＋ add card
+        カードを追加
       </button>
       <div>
         {Object.keys(items).map((key) => (

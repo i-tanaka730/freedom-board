@@ -1,10 +1,13 @@
+/* ボード */
 .Board {
   width: 2000px;
   height: 2000px;
   border: 1px solid #333;
-  position: relative;
+	position: relative;
+	background-color: #098045;
 }
 
+/* カード追加ボタン */
 .AddCard {
   position: fixed;
   cursor: pointer;
@@ -12,16 +15,25 @@
   border-radius: 10px;
   font-weight: bold;
   z-index: 1000;
-  background: white;
-  margin: 12px;
+	background-color: #333;
+	color: #FFF;
+	margin: 12px;
+	box-shadow: 0 0 3px 0 rgba(0,0,0,.12), 0 2px 3px 0 rgba(0,0,0,.22);
+	transition: .3s;
 }
 
+/* カード追加ボタン：選択時 */
+.AddCard:hover {
+	background-color: rgb(105, 102, 102);
+}
+
+/* カード */
 .Card {
   border: 1px solid #bdbdbd;
   padding: 20px;
   position: absolute;
-  min-width: 110px;
-  min-height: 110px;
+  min-width: 200px;
+  min-height: 80px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   background-color: white;
   border-radius: 15px;
@@ -29,49 +41,57 @@
   opacity: 0.99;
 }
 
+/* 削除ボタン */
 .DeleteBtn {
   position: absolute;
   top: 8px;
-  right: 8px;
-  opacity: 0.5;
+	right: 8px;
+	font-size: 1em;
+  opacity: 0.6;
   border: none;
-  background: transparent;
+	background: transparent;
 }
 
+/* 編集状態のテキスト */
 .EditableText {
   min-width: 80px;
   min-height: 80px;
   margin-top: 12px;
   border: none;
   cursor: pointer;
-  font-size: 0.92rem;
+  font-size: 0.8rem;
   line-height: 1rem;
-  font-family: "M PLUS Rounded 1c";
+  font-family: "Meiryo UI";
   background: transparent;
   overflow: hidden;
 }
 
+/* テキスト */
 .Text {
   padding-right: 12px;
-  font-size: 1rem;
+  font-size: 0.8rem;
   line-height: 1rem;
-  font-family: "M PLUS Rounded 1c";
+  font-family: "Meiryo UI";
 }
 
+/* テキストエリアのフォーカス */
 textarea:focus {
-  outline: 0;
+  outline: 1;
 }
 
+/* カードの色変更ボタン */
 .ColorSelector {
   position: absolute;
   top: 30px;
   right: 9px;
 }
+
+/* カードの色変更ボタン */
 .ColorCircle {
   width: 10px;
   height: 10px;
   margin: 2px;
   padding: 2px;
-  border: solid 1px #dedede;
+  border: solid 0.1px #333;
   border-radius: 50%;
 }
